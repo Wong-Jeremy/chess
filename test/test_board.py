@@ -39,11 +39,9 @@ class TestBoard(unittest.TestCase):
         """
         board = Board()
         # create a white piece on A1
-        piece_1 = BasicPiece("W", "NA", (0, 0))
-        board.add_piece(piece_1)
+        piece_1 = board.add_piece(BasicPiece("W", "NA", (0, 0)))
         # create a black piece on H8
-        piece_2 = BasicPiece("B", "NA", (7, 7))
-        board.add_piece(piece_2)
+        piece_2 = board.add_piece(BasicPiece("B", "NA", (7, 7)))
 
         self.assertEqual(piece_1, board.get_piece_from_position((0, 0)))
         self.assertEqual(piece_2, board.get_piece_from_position((7, 7)))
@@ -79,6 +77,26 @@ class TestBoard(unittest.TestCase):
 
         self.assertIn(piece_1, board.inactive_pieces)
         self.assertIn(piece_2, board.inactive_pieces)
+
+    def test_move_history(self):
+        """
+        Ensure that the moves get added to the history
+        """
+
+        board = Board()
+        piece = BasicPiece("W", 'NA', (0,0))
+
+        move_1 = (piece, (0, 0), (1, 1), 'N')
+        board.add_move_to_history(move_1)
+
+        move_2 = (piece, (0, 0), (2, 3), 'C')
+        board.add_move_to_history(move_2)
+
+        last_move = board.get_last_move()
+        self.assertTupleEqual(move_2, last_move)
+        move_history = board.get_move_history()
+        self.assertTupleEqual(move_1, move_history[0])
+        self.assertTupleEqual(move_2, move_history[1])
 
 
 
