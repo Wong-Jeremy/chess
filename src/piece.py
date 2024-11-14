@@ -81,7 +81,7 @@ class BasicPiece():
         """
         return self.__starting_square
 
-    def move_piece(self, pos):
+    def move_piece(self, new_pos):
         """
         Moves the piece
 
@@ -93,9 +93,10 @@ class BasicPiece():
         None
 
         """
-        self.pos = pos
+        self.previous_square = self.pos[:]
+        self.pos = new_pos[:]
 
-    def get_all_moves(self, board):
+    def update_all_moves(self, board):
         """
         Get all the possible moves for this piece.
         Not all of these moves will be legal.
