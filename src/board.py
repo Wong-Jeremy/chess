@@ -5,7 +5,9 @@ MAX_INDEX = 7
 
 class Board():
     def __init__(self):
-        self.board = [[None, None, None, None, None, None, None, None] for i in range(MAX_INDEX + 1)]
+        self.board = [
+            [None, None, None, None, None, None, None, None]
+            for i in range(MAX_INDEX + 1)]
         self.active_white_pieces = []
         self.active_black_pieces = []
         self.inactive_pieces = []
@@ -26,7 +28,8 @@ class Board():
         bool: True if the square is valid, False otherwise
 
         """
-        if pos[1] >= MIN_INDEX and pos[0] >= MIN_INDEX and pos[1] <= MAX_INDEX and pos[0] <= MAX_INDEX:
+        if (pos[1] >= MIN_INDEX and pos[1] <= MAX_INDEX
+            and pos[0] >= MIN_INDEX and pos[0] <= MAX_INDEX):
             return True
         return False
 
@@ -136,9 +139,11 @@ class Board():
         """
         piece_to_remove = self.board[pos[1]][pos[0]]
         if piece_to_remove.get_colour() == "W":
-            self.active_white_pieces[:] = list(filter(lambda item: item != piece_to_remove, self.active_white_pieces))
+            self.active_white_pieces[:] = list(filter(
+                lambda item: item != piece_to_remove, self.active_white_pieces))
         if piece_to_remove.get_colour() == "B":
-            self.active_black_pieces[:] = list(filter(lambda item: item != piece_to_remove, self.active_black_pieces))
+            self.active_black_pieces[:] = list(filter(
+                lambda item: item != piece_to_remove, self.active_black_pieces))
 
         self.board[pos[1]][pos[0]] = None
         self.inactive_pieces.append(piece_to_remove)
@@ -201,4 +206,3 @@ class Board():
                         self.active_white_pieces.append(self.board[file][rank])
                     if piece.get_colour() == "B":
                         self.active_black_pieces.append(self.board[file][rank])
-
