@@ -12,33 +12,39 @@ class Bishop(BasicPiece):
         BasicPiece.__init__(self, colour, 'bishop', pos)
         self.xray_squares = []
 
-    def get_all_moves(self, board):
+    def update_all_moves(self, board):
         self.all_moves = []
         self.xray_squares = []
+        self.squares_defended = []
 
         def check_direction(file, rank):
             is_xray = False
+            potential_pinned_piece = None
             # For backtracking x_ray squares
             num_moves = 0
-            
+
             check_square = (self.pos[0] + file, self.pos[1] + rank)
             while Board.is_valid_square(check_square):
+                self.squares_defended.append(check_square)
                 piece_at_square = board.get_piece_from_position(check_square)
                 if not board.get_piece_from_position(check_square):
-                    self.all_moves.append(check_square, 'N')
+                    self.all_moves.append((check_square, 'N'))
                     num_moves += 1
+                    check_square = (check_square[0] + file, check_square[1] + rank)
                 elif piece_at_square.get_colour() == self.get_colour():
                     break
                 elif piece_at_square.get_colour() != self.get_colour():
-                    self.all_moves.append(check_square, 'C')
+                    self.all_moves.append((check_square, 'C'))
                     num_moves += 1
+                    potential_pinned_piece = piece_at_square
                     is_xray = True
                     break
-            
+
             # Exists to speed up pinned piece checks
             if is_xray:
                 potential_pinned_squares = []
                 reverse_pinned_squares = [l[0] for l in self.all_moves[-num_moves:-1]]
+                reverse_pinned_squares.append(self.pos)
                 check_square = (check_square[0] + file, check_square[1] + rank)
                 while Board.is_valid_square(check_square):
                     piece_at_square = board.get_piece_from_position(check_square)
@@ -48,12 +54,13 @@ class Bishop(BasicPiece):
                         break
                     elif piece_at_square.get_colour() != self.get_colour():
                         if piece_at_square.get_piece_type() == 'king':
-                            piece_at_square.is_pinned = True
+                            potential_pinned_piece.is_pinned = True
                             potential_pinned_squares.extend(reverse_pinned_squares)
-                            piece_at_square.pinned_squares = potential_pinned_squares[:]
+                            potential_pinned_piece.pinned_squares = potential_pinned_squares[:]
                         break
+                    check_square = (check_square[0] + file, check_square[1] + rank)
 
-                        
+
         # Check upper left
         check_direction(-1,  1)
         # Check upper right
@@ -62,6 +69,6 @@ class Bishop(BasicPiece):
         check_direction(-1, -1)
         # Check lower right
         check_direction( 1, -1)
-        
-        
+
+
 
